@@ -1,3 +1,5 @@
+import json
+
 from django.test import TestCase
 from django.urls import reverse
 from rest_framework import status
@@ -38,3 +40,29 @@ class GetSinglePuppyTest(TestCase):
         url = reverse('get_delete_update_puppy', kwargs={'pk': puppy.pk + 1})
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+
+class CreateNewPuppyTest(TestCase):
+    def setUp(self):
+        self.valid_payload = {
+            'name': 'Muffin',
+            'age': 4,
+            'breed': 'Pamerion',
+            'color': 'White'
+        }
+        self.invalid_payload = {
+            'name': '',
+            'age': 4,
+            'breed': 'Pamerion',
+            'color': 'White'
+        }
+
+    def test_valid_post_request(self):
+        url = reverse('get_post_puppies')
+        response = self.client.post(url, data=json.dumps(self.valid_payload), content_type='application/json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+    def test_invalid_post_request(self):
+        url = reverse('get_post_puppies')
+        response = self.client.post(url, data=json.dumps(self.invalid_payload), content_type='application/json')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
