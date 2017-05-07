@@ -66,3 +66,40 @@ class CreateNewPuppyTest(TestCase):
         url = reverse('get_post_puppies')
         response = self.client.post(url, data=json.dumps(self.invalid_payload), content_type='application/json')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+
+class UpdateSinglePuppyTest(TestCase):
+    def setUp(self):
+        self.puppies = PuppyFactory.create_batch(2)
+        self.valid_payload = {
+            'name': 'Muffin',
+            'age': 4,
+            'breed': 'Pamerion',
+            'color': 'White'
+        }
+        self.invalid_payload = {
+            'name': '',
+            'age': 4,
+            'breed': 'Pamerion',
+            'color': 'White'
+        }
+
+    def test_valid_update_request(self):
+        puppy = Puppy.objects.all().latest('id')
+        url = reverse('get_delete_update_puppy', kwargs={'pk': puppy.pk})
+        response = self.client.put(
+            url,
+            data=json.dumps(self.valid_payload),
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+
+    def test_invalid_update_request(self):
+        puppy = Puppy.objects.all().latest('id')
+        url = reverse('get_delete_update_puppy', kwargs={'pk': puppy.pk})
+        response = self.client.put(
+            url,
+            data=json.dumps(self.invalid_payload),
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
