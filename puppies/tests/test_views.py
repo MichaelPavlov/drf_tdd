@@ -103,3 +103,20 @@ class UpdateSinglePuppyTest(TestCase):
             content_type='application/json'
         )
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+
+class DeleteSinglePuppyTest(TestCase):
+    def setUp(self):
+        self.puppies = PuppyFactory.create_batch(2)
+
+    def test_valid_delete_request(self):
+        puppy = Puppy.objects.all().latest('id')
+        url = reverse('get_delete_update_puppy', kwargs={'pk': puppy.pk})
+        response = self.client.delete(url)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+
+    def test_invalid_delete_request(self):
+        puppy = Puppy.objects.all().latest('id')
+        url = reverse('get_delete_update_puppy', kwargs={'pk': puppy.pk + 1})
+        response = self.client.delete(url)
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
