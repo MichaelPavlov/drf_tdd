@@ -1,4 +1,1 @@
-# django_project_template
-Starter template for django project
-
-Gets initial settings, starter bootstrap 4 html templates
+Project built by [tutorial](https://realpython.com/blog/python/test-driven-development-of-a-django-restful-api/) with slight customizations
